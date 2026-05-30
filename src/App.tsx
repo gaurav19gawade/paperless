@@ -32,6 +32,42 @@ function App() {
     }
   }
 
+  // Keyboard navigation
+  useEffect(() => {
+    if (!document) return;
+
+    const handleKey = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input/textarea
+      const target = e.target as HTMLElement;
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
+
+      switch (e.key) {
+        case "ArrowDown":
+        case "PageDown":
+        case " ":
+          e.preventDefault();
+          setCurrentPage(currentPage + 1);
+          break;
+        case "ArrowUp":
+        case "PageUp":
+          e.preventDefault();
+          setCurrentPage(currentPage - 1);
+          break;
+        case "Home":
+          e.preventDefault();
+          setCurrentPage(1);
+          break;
+        case "End":
+          e.preventDefault();
+          setCurrentPage(pageCount);
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [document, currentPage, pageCount, setCurrentPage]);
+
   // Render the current page whenever document or page changes
   useEffect(() => {
     if (!document || !canvasRef.current) return;
